@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import { Container, Grid, Box, Typography } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import useFetch from "./hooks/useFetch";
+import { Container, Grid, Box, Typography } from "@mui/material";
 import Header from "./components/Header";
+import useFetch from "./hooks/useFetch";
 import PrimaryButton from "./components/PrimaryButton";
+import ErrorBox from "./components/ErrorBox";
+import Loader from "./components/Loader";
 
-// Get the green & Blue from mockup to use for styling
+// Define the theme
 const theme = createTheme({
   palette: {
     primary: {
@@ -22,7 +24,7 @@ const theme = createTheme({
 });
 
 const Home: React.FC = () => {
-  // Define the Joke interface
+  // Define Joke interface
   interface Joke {
     id: number;
     joke: string;
@@ -33,12 +35,7 @@ const Home: React.FC = () => {
   const toggleShow = () => setShowJoke((prev) => !prev);
 
   // useFetch hook with Joke type
-  const {
-    data: joke,
-    isLoading,
-    error,
-    refetch,
-  } = useFetch<Joke>(
+  const { data: joke, isLoading, error, refetch } = useFetch<Joke>(
     "https://mwks-joke-service.azurewebsites.net/api/joke/random"
   );
 
@@ -53,26 +50,18 @@ const Home: React.FC = () => {
               linkUrl="https://mwks-joke-service.azurewebsites.net/swagger/index.html"
               linkText="View API Docs"
             />
-            {/* need a border here */}
+            {/* error handling */}
             <Grid item xs={12} mt={6}>
               {error && (
-                <Box textAlign="center">
-                  <Typography color="error" fontWeight="bold">
-                    THERE WAS AN ERROR LOADING YOUR JOKE.
-                  </Typography>
-                </Box>
+                <ErrorBox text="THERE WAS AN ERROR LOADING YOUR JOKE." />
               )}
               {/* if loading or data request in progress show loading message */}
               {!joke || isLoading ? (
-                <Box textAlign="center">
-                  <Typography fontWeight="bold">
-                    LOADING YOUR JOKE...
-                  </Typography>
-                </Box>
+                <Loader text="LOADING YOUR JOKE..." />
               ) : (
                 <>
                   <Box
-                    p={2}
+                    py={2}
                     display="flex"
                     flexDirection="column"
                     className="quote-wrap-start"
@@ -97,15 +86,19 @@ const Home: React.FC = () => {
                   </Box>
                 </>
               )}
-              <Box
-                p={2}
-                display="flex"
-                flexDirection="column"
-                alignItems="flex-end"
-                justifyContent="flex-end"
-              >
-                <Typography fontSize={26}>{joke?.punchLine}</Typography>
-              </Box>
+
+              {showJoke && (
+                <Box
+                  py={2}
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="flex-end"
+                  justifyContent="flex-end"
+                  className="quote-wrap-end"
+                >
+                   <Typography fontSize={26}>{joke?.punchLine}</Typography>
+                </Box>
+              )}
             </Grid>
           </Grid>
         </Container>
