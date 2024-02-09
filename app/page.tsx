@@ -24,7 +24,6 @@ const theme = createTheme({
 });
 
 const Home: React.FC = () => {
-  // Define Joke interface
   interface Joke {
     id: number;
     joke: string;
@@ -32,10 +31,21 @@ const Home: React.FC = () => {
   }
 
   const [showJoke, setShowJoke] = useState<boolean>(false);
-  const toggleShow = () => setShowJoke((prev) => !prev);
+  const toggleShow = () => {
+    setShowJoke((prev) => !prev);
+    // Hide punchline when toggling showJoke
+    if (showJoke) setShowPunchline(false);
+  };
+
+  const [showPunchline, setShowPunchline] = useState<boolean>(false);
 
   // useFetch hook with Joke type
-  const { data: joke, isLoading, error, refetch } = useFetch<Joke>(
+  const {
+    data: joke,
+    isLoading,
+    error,
+    refetch,
+  } = useFetch<Joke>(
     "https://mwks-joke-service.azurewebsites.net/api/joke/random"
   );
 
@@ -45,7 +55,10 @@ const Home: React.FC = () => {
         <Container maxWidth="lg">
           <Grid container>
             <Header
-              onClick={refetch}
+              onClick={() => {
+                refetch();
+                setShowPunchline(false);
+              }}
               className="header-wrapper"
               linkUrl="https://mwks-joke-service.azurewebsites.net/swagger/index.html"
               linkText="View API Docs"
@@ -79,15 +92,22 @@ const Home: React.FC = () => {
                   >
                     <PrimaryButton
                       variant="contained"
-                      text={!showJoke ? "Show Punchline" : "Hide Punchline"}
-                      onClick={toggleShow}
+                      text={
+                        !showPunchline ? "Show Punchline" : "Hide Punchline"
+                      }
+                      onClick={() => {
+                        toggleShow();
+                        setShowPunchline((prev) => !prev);
+                      }}
                       color="secondary"
+                      padding="1rem 2rem"
+                      borderRadius="4rem"
                     />
                   </Box>
                 </>
               )}
 
-              {showJoke && (
+              {showPunchline && (
                 <Box
                   py={2}
                   display="flex"
@@ -96,7 +116,7 @@ const Home: React.FC = () => {
                   justifyContent="flex-end"
                   className="quote-wrap-end"
                 >
-                   <Typography fontSize={26}>{joke?.punchLine}</Typography>
+                  <Typography fontSize={26}>{joke?.punchLine}</Typography>
                 </Box>
               )}
             </Grid>

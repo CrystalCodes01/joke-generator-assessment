@@ -21,6 +21,8 @@ const Header: React.FC<HeaderProps> = ({ onClick, className, linkUrl, linkText }
               onClick={onClick}
               variant="contained"
               color="primary"
+              padding="1rem 2rem"
+              borderRadius="4rem"
             />
           </Grid>
           <Grid item xs={6} display="flex" justifyContent="flex-end">

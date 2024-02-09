@@ -4,3 +4,52 @@ body {
   height: 100vh;
   overflow-x: hidden;
 }
+
+a {
+  color: #0080c3;
+  text-decoration: underline;
+  &:hover,
+  &:focus,
+  &:active {
+    color: #61c363;
+  }
+}
+
+.header-wrapper {
+  border-bottom: #e0e0e0 1px solid;
+}
+
+.quote-wrap-start,
+.quote-wrap-end {
+  position: relative;
+  &:before,
+  &:after {
+    color: #e0e0e0;
+    font-size: 18rem;
+    font-family: "Gill Sans", sans-serif;
+    position: absolute;
+    z-index: -10;
+  }
+}
+
+.quote-wrap-start {
+  p {
+    margin-left: 3rem;
+  }
+  &:before {
+    content: "“";
+    top: -4rem;
+    left: 0;
+  }
+}
+
+.quote-wrap-end {
+  p {
+    margin-right: 3rem;
+  }
+  &:after {
+    content: "”";
+    top: -4rem;
+    right: 0;
+  }
+}
